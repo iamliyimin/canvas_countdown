@@ -6,5 +6,4 @@ canvas 绘图与动画基础
 3. 先设置绘制状态，再使用绘制方法进行具体绘制，stroke()方法绘制线条，fill()方法给多边形实心着色
 4. 使用context.moveTo()和context.lineTo()定义一个路径。若想要定义多个路径并且让其分开，则使用context.beginPath()和context.closePath()来将多个图形的首位分隔开。当绘制的状态的路径不是封闭状态时，使用了closePath()，closePath()会自动使用一条线段将这个不封闭的路径的首尾连接起来形成一个封闭的路径，常见于画非圆的弧时，若是不想要封闭，可以去掉closePath()的使用。
 5. 使用context.arc(centerX, centerY, radius, startingAngle, endingAngle, anticlockwise=false)方法绘制弧线，参数包括原点x坐标，原点y坐标， 起始角度，结束角度，是否逆时针（false为顺时针，true为逆时针）；特别说明的是无论是顺时针还是逆时针，无论开始和结束弧度是多少，弧度值的位置是不变的，依然是按照顺时针从0pi、0.5pi、1pi、1.5pi、2pi(跟0pi重叠)这样两两之间相隔90度来排布。
-6. 
 
