@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" /> <!--让浏览器知道用什么编码解释文档-->
+        <title>canvas实现绚丽倒计时效果</title>  <!--文档在浏览器中的标签标题-->
+        <meta name="keywords" content="js html css" /> <!--关键字-->
+        <meta name="descripction" content="a project testing for canvas" /> <!--描述-->
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" /> <!--设置可收缩视图-->
+        <meta http-equiv="X-UA-Compatible" content="IE=egde, chrome=1" />
+        <style type="text/css">
+            h3 {
+                width: 200px;
+                height: 50px;
+                line-height: 50px;
+                color: #000;
+                font-size: 26px;
+                margin: 20px auto;
+                text-align: center;
+            }
+            .content {
+                width: 100%;
+                height: 100%;
+                margin-top: 20px;
+                overflow: hidden;
+            }
+            .button {
+                float: left;
+                margin: 0px 200px;
+            }
+            p {
+                width: 150px;
+                text-align: center;
+                line-height: 40px;
+                margin-bottom: 20px;
+                box-shadow: darkgrey 5px 5px 15px 2px ;
+                background: #CC6F44;
+                color: #ffffff;
+                border-radius: 20px;
+            }
+            #canvas {
+                display: block;
+                float: left;
+                border: 1px #000 solid;
+                /* margin-left: 100px; */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-wrap">
+            <h3>canvas直线练习</h3>
+            <div class="content">
+                <div class="button">
+                    <p onclick="line()">一条线</p>
+                    <p onclick="oneDraw()">单个空心图形</p>
+                    <p onclick="oneDraw_color()">单个实心图形</p>
+                    <p onclick="twoDraw()">多个图形</p>
+                    <p onclick="tangramDraw()">多边形和七巧板</p>
+                    <p onclick="draw_a_arc()">一条弧线</p>
+                    <p onclick="draw_a_circle()">一个圆</p>
+                    <p onclick="drawArcs()">多条弧</p>
+                    <p onclick="doTest()">canvas动画效果</p>
+                    <p onclick="drawCountDown()">时间倒计时</p>
+                </div>
+                <!-- 指定canvas的大小不建议用css的方式，而是直接在canvas标签内设置width和height属性，而且是不带单位的。原因是这里显示的大小不但是canvas的显示大小还有画布里面的内容分辨率的大小。
+                 这里的width和height实际是指定了画布内里的显示精度，这样设置是一并设置了精度和画布大小，符合w3c的规定。如果仅仅是在css设置则只是设置了画布大小，内里显示精度没有设置会跟画布大小不匹配。 -->
+                <canvas id="canvas">
+                    <!-- 如果浏览器不支持canvas则会显示canvas标签里面的字，如果支持则会忽略 -->
+                    当前浏览器不支持canvas，请更换浏览器后再试！
+                </canvas>
+            </div>
+        </div>
+        <script src="./digit.js"></script>
+    </body>
+    <script type="text/javascript">
+        window.onload = function() {
+            // doTest();
+            // line();
+            // tangramDraw();
+            drawCountDown();
+            // document.onclick=function(e){
+            //     alert((e.pageX-559) + ',' + (e.pageY-90));
+            // }
+        }
+        // 获取canvas对象
+        var countDown = document.getElementById('canvas');
+
+        // 设置canvas大小还可以使用以下方式
+           countDown.width = 1024;
+           countDown.height = 768;
+        
+        // 获取canvas绘图的上下文环境
+        var context = countDown.getContext('2d');
+
+        // 清空画布方法
+        function clearCanvas() {
+            countDown.height = countDown.height;
+        };
+
+
+/****************  画一条线  *************/
+        function line() {
+            clearCanvas();
+            // 画一条线
+            // 设置绘图状态
+            context.moveTo(100,100); // 起点
+            context.lineTo(700,700); // 终点
+            context.lineWidth = 5; // 线条宽度
+            context.strokeStyle = "#005588"; // 线条颜色
+            // 开始具体绘图，stroke()用于绘制线条的方法
+            context.stroke();
+        }
+
+
+/****************  画一个多边形  *************/
+        function oneDraw() {
+            clearCanvas();
+            // 画一个多边形
+            // 设置绘图状态
+            context.moveTo(100,100); // 第一条线的起点
+            context.lineTo(700,700); // 第一条线的终点，第二条线的起点
+            context.lineTo(100,700); // 第二条线的终点，第三条线的起点
+            context.lineTo(100,100); // 第三条线的终点，也是回到原点的位置
+            context.lineWidth = 5; // 线条宽度
+            context.strokeStyle = "#005588"; // 线条颜色
+            // 开始具体绘图，stroke()用于绘制线条的方法
+            context.stroke();
+        };
+
+
+/****************  画一个实心的多边形 *************/
+        function oneDraw_color() {
+            clearCanvas();
+            // 画一个有边框的实心着色多边形
+            // 设置绘图状态
+            context.moveTo(100,100); // 第一条线的起点
+            context.lineTo(700,700); // 第一条线的终点，第二条线的起点
+            context.lineTo(100,700); // 第二条线的终点，第三条线的起点
+            context.lineTo(100,100); // 第三条线的终点，也是回到原点的位置
+            context.lineWidth = 5; // 线条宽度
+            // 使用fillStyle属性设置着色颜色
+            context.fillStyle = "rgb(2,100,30)"; // 对变形颜色
+            // 使用fill()方法开始着色
+            context.fill();
+            context.strokeStyle = "red"; // 线条颜色
+            // 开始具体绘图，stroke()用于绘制线条的方法
+            context.stroke();
+        };
+
+
+/****************  画多个多边形  *************/
+        function twoDraw() {
+            clearCanvas();
+            // 画两个图形，用到beginPath()和closePath()
+            // 设置绘图状态
+            context.beginPath();
+            context.moveTo(100,100); // 第一条线的起点
+            context.lineTo(700,700); // 第一条线的终点，第二条线的起点
+            context.lineTo(100,700); // 第二条线的终点，第三条线的起点
+            context.lineTo(100,100); // 第三条线的终点，也是回到原点的位置
+            context.closePath();
+            context.lineWidth = 5; // 线条宽度
+            // 使用fillStyle属性设置着色颜色
+            context.fillStyle = "rgb(2,100,30)"; // 对变形颜色
+            // 使用fill()方法开始着色
+            context.fill();
+
+            // 设置第二个图形的绘制状态
+            context.beginPath();
+            context.moveTo(300,100); // 第一条线的起点
+            context.lineTo(500,300); // 第一条线的终点，第二条线的起点
+            context.lineTo(800,100); // 第二条线的终点，第三条线的起点
+            context.lineTo(300,100); // 第三条线的终点，也是回到原点的位置
+            context.closePath();
+            context.lineWidth = 5; // 线条宽度
+            context.strokeStyle = "#005588"; // 线条颜色
+            // 开始具体绘图，stroke()用于绘制线条的方法
+            context.stroke();
+        };
+
+
+/****************  画一个七巧板 *************/
+        // var tangram = [];
+        function tangramDraw() {
+            clearCanvas();
+            // 设置相框的绘制状态
+            context.beginPath();
+            context.moveTo(200,100); // 第一条线的起点
+            context.lineTo(700,100); // 第一条线的终点，第二条线的起点
+            context.lineTo(700,600); // 第二条线的终点，第三条线的起点
+            context.lineTo(200,600); // 第三条线的终点，也是回到原点的位置
+            context.lineTo(200,100); // 第三条线的终点，也是回到原点的位置
+            context.closePath();
+            context.lineWidth = 15; // 线条宽度
+            context.strokeStyle = "#F7B561"; // 线条颜色
+            // 开始绘制相框
+            context.stroke();
+
+            // 设置边框与边框之间的裂痕的绘制状态
+            context.beginPath();
+            context.moveTo(194,93); // 第一条线的起点
+            context.lineTo(208,108); // 第一条线的终点，第二条线的起点
+            context.closePath();
+            context.lineWidth = 1; // 线条宽度
+            context.strokeStyle = "#B16B2F"; // 线条颜色
+            context.stroke();
+
+            context.beginPath();
+            context.moveTo(706,93); // 第一条线的起点
+            context.lineTo(692,108); // 第一条线的终点，第二条线的起点
+            context.closePath();
+            context.lineWidth = 1; // 线条宽度
+            context.strokeStyle = "#B16B2F"; // 线条颜色
+            context.stroke();
+
+            context.beginPath();
+            context.moveTo(706,606); // 第一条线的起点
+            context.lineTo(692,594); // 第一条线的终点，第二条线的起点
+            context.closePath();
+            context.lineWidth = 1; // 线条宽度
+            context.strokeStyle = "#B16B2F"; // 线条颜色
+            context.stroke();
+
+            context.beginPath();
+            context.moveTo(193,606); // 第一条线的起点
+            context.lineTo(208,594); // 第一条线的终点，第二条线的起点
+            context.closePath();
+            context.lineWidth = 1; // 线条宽度
+            context.strokeStyle = "#B16B2F"; // 线条颜色
+            context.stroke();
+
+            // 定义七巧板的坐标数组
+            var tangram = [
+                {p:[{x:208, y:108},{x:458, y:108},{x:208, y:358}], color:'#FF4C33'},
+                {p:[{x:458, y:108},{x:692, y:108},{x:603, y:198}], color:'#86728D'},
+                {p:[{x:458, y:108},{x:353, y:213},{x:493, y:311}, {x:603, y:198}], color:'#FEE320'},
+                {p:[{x:353, y:213},{x:493, y:311}, {x:364, y:438}], color:'#935443'},
+                {p:[{x:208, y:358},{x:353, y:213},{x:364, y:438},{x:208, y:593}], color:'#3D709F'},
+                {p:[{x:493, y:311},{x:208, y:593}, {x:692, y:593}], color:'#589260'},
+                {p:[{x:493, y:311}, {x:692, y:593},{x:692, y:108}], color:'#FE8A3D'},
+                // {p:[{x:208, y:524},{x:364, y:383},{x:353, y:593},{x:208, y:593}], color:'#589260'},
+                // {p:[{x:, y:},{x:, y:},{x:, y:},], color:''},
+                // {p:[{x:, y:},{x:, y:},{x:, y:},], color:''},
+                // {p:[{x:, y:},{x:, y:},{x:, y:},], color:''},
+                // {p:[{x:, y:},{x:, y:},{x:, y:},], color:''}
+            ];
+            for(var i=0; i < tangram.length; i++) {
+                drawCopy(tangram[i]);
+            }
+        };
+        // 反复绘制多边形
+        function drawCopy(arr) {
+            context.beginPath();
+            context.moveTo(arr.p[0].x,arr.p[0].y); // 第一条线的起点
+            for(var i = 1; i < arr.p.length; i++) {
+                context.lineTo(arr.p[i].x,arr.p[i].y);
+            }
+            // context.lineTo(arr.p[0].x,arr.p[0].y); // 第一条线的终点，第二条线的起点
+            context.closePath();
+            context.lineWidth = 1; // 线条宽度
+            context.fillStyle = arr.color; // 对变形颜色
+            context.fill();
+            context.strokeStyle = "#211A07"; // 线条颜色
+            context.stroke();
+        }
+
+
+/****************  画一条弧  *************/
+        // 画一条弧
+        function draw_a_arc() {
+            clearCanvas();
+            context.lineWidth = 5; // 线条宽度
+            context.strokeStyle = "#211A07"; // 线条颜色
+            context.arc(300,300,200,0,1.5*Math.PI,false);
+            context.stroke();
+        };
+
+
+/****************  画一个圆  *************/
+        // 画一个圆
+        function draw_a_circle() {
+            clearCanvas();
+            context.lineWidth = 5; // 线条宽度
+            context.strokeStyle = "#211A07"; // 线条颜色
+            context.arc(300,300,200,0,2*Math.PI,true);
+            context.stroke();
+        };
+
+
+/****************  画多条不封闭的弧  *************/
+        // 当绘制的状态的路径不是封闭状态时，使用了closePath()，
+        // closePath()会自动使用一条线段将这个不封闭的路径的首尾连接起来形成一个封闭的路径，
+        // 常见于画非圆的弧时，若是不想要封闭，可以去掉closePath()的使用。(fill()也有此功能。)
+        function drawArcs() {
+            clearCanvas();
+            context.lineWidth = 5; // 线条宽度
+            context.strokeStyle = "#005588"; // 线条颜色
+            // 封闭路径
+            for(var i = 1; i < 10; i++) {
+                context.beginPath();
+                context.arc(50+i*100,200,40,0,2*Math.PI*(i+1)/10,false);
+                context.closePath();
+                context.stroke();
+            }
+            // 不封闭路径
+            for(var i = 1; i < 10; i++) {
+                context.beginPath();
+                context.arc(50+i*100,320,40,0,2*Math.PI*(i+1)/10,false);
+                // context.closePath();
+                context.stroke();
+            }
+            // 逆时针
+            for(var i = 1; i < 10; i++) {
+                context.beginPath();
+                context.arc(50+i*100,440,40,0,2*Math.PI*(i+1)/10,true);
+                // context.closePath();
+                context.stroke();
+            }
+            // 填充实心
+            context.fillStyle = '#FEE320';
+            for(var i = 1; i < 10; i++) {
+                context.beginPath();
+                context.arc(50+i*100,560,40,0,2*Math.PI*(i+1)/10,true);
+                context.closePath();
+                context.fill();
+            }
+        };
+
+
+/****************  做一个小球的物理实验  *************/
+
+        // 定义一个小球对象,包含初始化位置x和y值, 小球半径r, 小球运动加速度g, 小球在x方向的速度vx, 小球在y方向的速度vy, 小球的颜色color
+        // 如果想让小球运动得慢些，加速度g就设小一些。让小球往左边运动设vx为负数，往右运动设vx为正数；让小球上抛可以设置vy为负数
+        var ballTest = {x:512, y: 100, r: 20, g: 2, vx: -4, vy: -10, color: '#005588'};
+        // 使用canvas做个物理实验
+        function doTest() {
+            setInterval(function() {
+                renderTest();
+                updateTest();
+            }, 50);
+        };
+        // 绘制小球
+        function renderTest() {
+            clearCanvas();
+
+            context.fillStyle = ballTest.color;
+            context.beginPath();
+            context.arc(ballTest.x, ballTest.y, ballTest.r, 0, 2*Math.PI);
+            context.closePath();
+            context.fill();
+        };
+        // 变化引起物理实验
+        function updateTest() {
+            // 小球运动过程中,x轴和y轴坐标都加上各自方向的速度而移动
+            ballTest.x += ballTest.vx;
+            ballTest.y += ballTest.vy;
+            // 重力加速度之影响y轴的速度,所以y轴的速度加上重力加速度
+            ballTest.vy += ballTest.g;
+
+            // 小球监测碰撞，当碰到地板时反弹
+            if(ballTest.y > countDown.height - ballTest.r) {
+                ballTest.y = countDown.height - ballTest.r;
+                ballTest.vy = -ballTest.vy * 0.5; // 每次反弹小球的速度都会损失0.5
+            }
+
+        };
+
+
+/****************  画一个点阵式的会自动变化的酷炫倒计时  *************/
+
+        // 绘制倒计时的点阵式显示
+        // 定义设置画布宽高的变量
+        var WINDOW_WIDTH = 1024;
+        var WINDOW_HEIGHT = 768;
+        var RADIUS = 7; // 小球半径
+        var MARGIN_TOP = 90; // 小球距离画布上边距
+        var MARGIN_LEFT = 90; // 左边第一个小球距离画布左边的距离
+        const endTime = new Date(2018, 10, 24, 18, 30, 59); //截止时间, 月数是从0到11的，代表1到12月份，这里的10表示11月
+        var curShowTimeSeconds = 0; // 表示现在倒计时需要有多少毫秒，方便与用getTime()获取到的毫秒数做计算然后转化得到具体的时分秒
+        // 生成小球，随机赋予颜色
+        var balls = [];
+        const colors = ['#FF4C33', '#86728D', '#FEE320', '#3D709F', '#935443', '#589260', '#FE8A3D', '#FFBB33', '#FF8800', '#CC0000'];
+        
+        function drawCountDown() {
+            clearCanvas();
+            countDown.width = WINDOW_WIDTH;
+            countDown.height = WINDOW_HEIGHT;
+            curShowTimeSeconds = getCurShowTimeSeconds(); // 计算距离截至日期还有多少时间
+            // 开始绘制时钟
+            // render();
+            // 使用循环调用显示时间的变化
+            setInterval(function(){
+                render();
+                update();
+            }, 60);
+        };
+
+        function update() {
+            // 即将要显示的一个时间
+            var nextShowTimeSeconds = getCurShowTimeSeconds(); // 获取当前时间作为下一个时间,判断当前时间跟下一个时间是否相等,不相等就执行变化
+            var nextHour = parseInt(nextShowTimeSeconds / 3600); 
+            var nextMinutes = parseInt((nextShowTimeSeconds - nextHour * 3600) / 60); 
+            var nextSeconds = nextShowTimeSeconds % 60;
+            // 正在显示的时间
+            var curHour = parseInt(curShowTimeSeconds / 3600); 
+            var curMinutes = parseInt((curShowTimeSeconds - curHour * 3600) / 60); 
+            var curSeconds = curShowTimeSeconds % 60;
+            // 比较两个时间是否相等,不相等说明时间在发生变化,应该重新调用render函数渲染 
+            if (nextSeconds != curSeconds) {
+                // 当时间发生变化时，执行产生小球的操作
+                if (parseInt(curHour/10) != parseInt(nextHour/10)) {
+                    addBalls(MARGIN_LEFT, MARGIN_TOP, parseInt(curHour/10));
+                }
+                if (parseInt(curHour%10) != parseInt(nextHour%10)) {
+                    addBalls(MARGIN_LEFT + 15*(RADIUS+1), MARGIN_TOP, parseInt(curHour%10));
+                }
+                if (parseInt(curMinutes/10) != parseInt(nextMinutes/10)) {
+                    addBalls(MARGIN_LEFT+39*(RADIUS+1), MARGIN_TOP, parseInt(curMinutes/10));
+                }
+                if (parseInt(curMinutes%10) != parseInt(nextMinutes%10)) {
+                    addBalls(MARGIN_LEFT+54*(RADIUS+1), MARGIN_TOP, parseInt(curMinutes%10));
+                }
+                if (parseInt(curSeconds/10) != parseInt(nextSeconds/10) ) {
+                    addBalls(MARGIN_LEFT+78*(RADIUS+1), MARGIN_TOP, parseInt(curSeconds/10));
+                }
+                if (parseInt(curSeconds%10) != parseInt(nextSeconds%10) ) {
+                    addBalls(MARGIN_LEFT+93*(RADIUS+1), MARGIN_TOP, parseInt(curSeconds%10));
+                }
+                curShowTimeSeconds = nextShowTimeSeconds;
+            }
+            updateBalls();
+        };
+
+        // 产生随机颜色小球
+        function addBalls(x, y, num) {
+            // 遍历绘制num的二维点阵数组
+            for(var i = 0; i < digit[num].length; i++) {
+                // 遍历绘制num的二维点阵数组的第i行
+                for(var j = 0; j < digit[num][i].length; j++) {
+                    // 判断点阵中位置为1的地方产生一个小球球
+                    if (digit[num][i][j] == 1) {  
+                        var aBall = {
+                            x: x+j*2*(RADIUS+1)+(RADIUS+1),
+                            y: y+i*2*(RADIUS+1)+(RADIUS+1),
+                            g: 1.5+Math.random(),
+                            vx: Math.pow(-1, Math.ceil(Math.random()*1000)) * 4,
+                            vy: -5,
+                            color: colors[(Math.floor(Math.random()*colors.length))]
+                        };
+                        balls.push(aBall);
+                    }
+                }
+            }
+
+            var cnt = 0; 
+            for(var i = 0; i < balls.length; i++) {
+                // 如果小球没有离开画布的左边和右边界说明还留在画布内，因此将它放在数组的前面（已经遍历过不会再被遍历），这样就可以将它保留在数组里
+                if (balls[i].x + RADIUS > 0 && balls[i].x - RADIUS < countDown.width) {
+                    balls[cnt++] = balls[i];
+                }
+            }
+            // 当小球的数量超过cnt，则将cnt后面的小球，即不符合上面条件的小球删除掉。取300和cnt中的最小值，就是当小球数量超过300则只绘制300个小球
+            while(balls.length > Math.min(300, cnt)) {
+                balls.pop();
+            }
+        };
+
+        // 已经产生的小球的运动
+        function updateBalls() {
+            for(var i = 0; i < balls.length; i++) {
+                // 小球运动过程中,x轴和y轴坐标都加上各自方向的速度而移动
+                balls[i].x += balls[i].vx;
+                balls[i].y += balls[i].vy;
+                // 重力加速度之影响y轴的速度,所以y轴的速度加上重力加速度
+                balls[i].vy += balls[i].g;
+
+                // 小球监测碰撞，当碰到地板时反弹
+                if(balls[i].y > countDown.height - RADIUS) {
+                    balls[i].y = countDown.height - RADIUS;
+                    balls[i].vy = -balls[i].vy * 0.75; // 每次反弹小球的速度都会损失0.5
+                }
+
+            }
+        };
+
+        // 获取当前时间的秒数
+        function getCurShowTimeSeconds() {
+            var curTime = new Date(); // 获得当前时间
+            var ret = endTime.getTime() - curTime.getTime(); // 截至时间的毫秒数减去当前时间的毫秒数，得到倒计时应该显示的毫秒数
+            ret = Math.round(ret / 1000); // 将ret转成秒数，并用Math.round()方法转成整数返回
+            return ret >= 0 ? ret : 0; // 如果倒计时不为0则返回倒计时时间，若为0则返回0
+        };
+
+        // 这里只处理绘制过程，不处理逻辑过程
+        function render() {
+            clearCanvas();
+            // 1. 首先设置现在距离截至时间还有多少时间，getTime()返回的是日期距离1970年1月1日的一个毫秒数
+            var hour = parseInt(curShowTimeSeconds / 3600); // 将倒计时总共的秒数转换成小时
+            var minutes = parseInt((curShowTimeSeconds - hour * 3600) / 60); // 将倒计时去掉小时后的时间总共的秒数转换成分
+            var seconds = curShowTimeSeconds % 60; // 倒计时总共的秒数对60取余得到秒数
+            // 绘制点阵数字,参数：绘制起始位置的x和y值，小时的十位数
+            renderDigit(MARGIN_TOP,MARGIN_LEFT,parseInt(hour/10)); // 小时十位
+            renderDigit(MARGIN_LEFT+15*(RADIUS+1),MARGIN_TOP,parseInt(hour%10)); // 小时个位
+            renderDigit(MARGIN_LEFT+30*(RADIUS+1),MARGIN_TOP,10); // 冒号
+            renderDigit(MARGIN_LEFT+39*(RADIUS+1),MARGIN_TOP,parseInt(minutes/10)); // 分钟十位
+            renderDigit(MARGIN_LEFT+54*(RADIUS+1),MARGIN_TOP,parseInt(minutes%10)); // 分钟个位
+            renderDigit(MARGIN_LEFT+69*(RADIUS+1),MARGIN_TOP,10); // 冒号
+            renderDigit(MARGIN_LEFT+78*(RADIUS+1),MARGIN_TOP,parseInt(seconds/10)); // 秒钟十位
+            renderDigit(MARGIN_LEFT+93*(RADIUS+1),MARGIN_TOP,parseInt(seconds%10)); // 秒钟个位
+
+            // 绘制小球
+            for(var i = 0; i < balls.length; i++) {
+                context.fillStyle = balls[i].color;
+                context.beginPath();
+                context.arc(balls[i].x, balls[i].y, RADIUS, 0, 2*Math.PI, true);
+                context.closePath();
+                context.fill();
+            }
+        };
+
+        function renderDigit(x,y,num) {
+            // 思路：遍历digit中每一个二维点阵，并且在每一个二维值为1的地方画一个实心的小球
+            context.fillStyle = '#3D709F';
+            // 遍历绘制num的二维点阵数组
+            for(var i = 0; i < digit[num].length; i++) {
+                // 遍历绘制num的二维点阵数组的第i行
+                for(var j = 0; j < digit[num][i].length; j++) {
+                    // 判断点阵中位置为1的地方绘制一个圆球
+                    if (digit[num][i][j] == 1) {  
+                        context.beginPath();
+                        context.arc(x+j*2*(RADIUS+1)+(RADIUS+1), y+i*2*(RADIUS+1)+(RADIUS+1), RADIUS, 0, 2*Math.PI);
+                        context.closePath();
+                        context.fill();
+                    }
+                }
+            }
+        };
+    </script>
+
+</html>
